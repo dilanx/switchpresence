@@ -4,8 +4,6 @@ import { appWindow } from '@tauri-apps/api/window';
 import { useEffect, useState, useTransition } from 'react';
 import { RingLoader } from 'react-spinners';
 
-import games from './games.json';
-
 import './App.scss';
 
 interface Game {
