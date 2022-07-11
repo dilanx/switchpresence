@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "deploy": "TAURI_PRIVATE_KEY=$(cat .keys.local/sp.key) TAURI_KEY_PASSWORD=$(cat .keys.local/sp.key.pw) tauri build"
+    "deploy": "tauri build"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.0.2",
