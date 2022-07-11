@@ -62,15 +62,17 @@ fn init_window_menu(title: String) -> Menu {
                 .add_native_item(MenuItem::Separator)
                 .add_native_item(MenuItem::Quit)
         );
-        menu = menu.add_submenu(about);
+        let discord = Submenu::new(
+            "Discord",
+            Menu::new()
+                .add_item(CustomMenuItem::new("sp-clear", "Clear Rich Presence").accelerator("CmdOrCtrl+K"))
+        );
+        menu = menu
+            .add_submenu(about)
+            .add_submenu(discord);
     }
-    let discord = Submenu::new(
-        "Discord",
-        Menu::new()
-            .add_item(CustomMenuItem::new("sp-clear", "Clear Rich Presence").accelerator("CmdOrCtrl+K"))
-    );
-
-    return menu.add_submenu(discord);
+    
+    return menu;
     
 }
 
