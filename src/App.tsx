@@ -12,6 +12,7 @@ interface Game {
 }
 
 function App() {
+  const [games, setGames] = useState<Game[]>([]);
   const [game, setGame] = useState<Game | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [searchResults, setSearchResults] = useState<JSX.Element[]>([]);
@@ -19,6 +20,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     appWindow.listen('event_clear_presence', () => {
       setLoading(true);
       setGame(null);
@@ -29,12 +31,26 @@ function App() {
         setLoading(false);
       });
     });
+    fetch(
+      'https://raw.githubusercontent.com/dilanx/switchpresence/main/games.json'
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setGames(data);
+      })
+      .catch((err) => {
+        message('Failed to load games.');
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   function updateQuery(text: string) {
     startTransition(() => {
       setSearchResults(
-        getSearchResults(text, (game: Game) => {
+        getSearchResults(text, games, (game: Game) => {
           setLoading(true);
           setGame(game);
           setEditMode(false);
@@ -88,7 +104,7 @@ function App() {
             disabled={loading}
             onClick={() => {
               setEditMode(true);
-              setSearchResults(getSearchResults(''));
+              setSearchResults(getSearchResults('', games));
             }}
           >
             Edit
@@ -109,7 +125,11 @@ function App() {
   );
 }
 
-function getSearchResults(query: string, select?: (game: Game) => void) {
+function getSearchResults(
+  query: string,
+  games: Game[],
+  select?: (game: Game) => void
+) {
   let results: JSX.Element[] = [];
   if (query.length === 0) {
     return [
