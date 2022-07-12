@@ -1,16 +1,17 @@
-<img
-    src="src-tauri/icons/icon.png"
-    alt="SwitchPresence"
-    width="128"
-    height="128"
-    style="display: block; margin: 0 auto;"
-/>
+<p align="center">
+    <img
+        src="src-tauri/icons/icon.png"
+        alt="SwitchPresence"
+        width="128"
+        height="128"
+    />
+</p>
 
-<h1 style="text-align: center; font-size: 32px; font-weight: bold; margin: 0; border: none;">
+<h1 align="center">
     SwitchPresence
 </h1>
 
-<p style="text-align: center; font-size: 16px;">
+<p align="center">
     Discord Rich Presence for Nintendo Switch games
 </p>
 
