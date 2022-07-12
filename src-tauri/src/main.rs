@@ -7,8 +7,21 @@ use discord_rpc_client::Client;
 use discord_rpc_client::models::rich_presence::Activity;
 use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use std::time::{SystemTime, UNIX_EPOCH};
-use tauri::{State, CustomMenuItem, Menu, MenuItem, Submenu, AboutMetadata};
 use std::sync::Mutex;
+use tauri::{
+    State,
+    CustomMenuItem,
+    Menu,
+    MenuItem,
+    Submenu,
+    AboutMetadata,
+    SystemTray,
+    SystemTrayMenu,
+    SystemTrayEvent,
+    SystemTrayMenuItem,
+    Manager
+};
+
 
 struct App {
     client: Mutex<Client>,
@@ -35,6 +48,40 @@ fn main() {
                 _ => {}
             }
         })
+        .system_tray(init_system_tray())
+        .on_system_tray_event(|app, event| match event {
+            #[cfg(target_os = "windows")]
+            SystemTrayEvent::LeftClick { position: _, size: _, .. } => {
+                app.get_window("main").unwrap()
+                    .set_focus().unwrap();
+            }
+            SystemTrayEvent::MenuItemClick {id, ..} => {
+                match id.as_str() {
+                    "sp-focus" => {
+                        app.get_window("main").unwrap()
+                            .set_focus().unwrap();
+                    } 
+                    "sp-edit" => {
+                        app.get_window("main").unwrap()
+                            .emit("event_edit_presence", {})
+                                .expect("failed to emit edit event");
+                    }
+                    "sp-clear" => {
+                        app.get_window("main").unwrap()
+                            .emit("event_clear_presence", {})
+                                .expect("failed to emit clear event");
+                    }
+                    "sp-github" => {
+                        open::that("https://github.com/dilanx/switchpresence").unwrap();
+                    }
+                    "sp-quit" => {
+                        std::process::exit(0);
+                    }
+                    _ => {}
+                }
+            }
+            _ => {}
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -60,7 +107,8 @@ fn init_window_menu(title: String) -> Menu {
                 .add_native_item(
                     MenuItem::About(
                         "SwitchPresence".to_string(),
-                        AboutMetadata::new().copyright("Copyright © 2022 Dilan Nair (dilanxd.com)".to_string())
+                        AboutMetadata::new()
+                            .copyright("Copyright © 2022 Dilan Nair (dilanxd.com)".to_string())
                     )
                 )
                 .add_item(CustomMenuItem::new("sp-github", "View on GitHub"))
@@ -74,7 +122,7 @@ fn init_window_menu(title: String) -> Menu {
         let discord = Submenu::new(
             "Discord",
             Menu::new()
-                .add_item(CustomMenuItem::new("sp-clear", "Clear Rich Presence").accelerator("CmdOrCtrl+K"))
+                .add_item(CustomMenuItem::new("sp-clear", "Clear Activity").accelerator("CmdOrCtrl+K"))
         );
         menu = menu
             .add_submenu(about)
@@ -83,6 +131,19 @@ fn init_window_menu(title: String) -> Menu {
     
     return menu;
     
+}
+
+fn init_system_tray() -> SystemTray {
+    SystemTray::new().with_menu(
+        SystemTrayMenu::new()
+        .add_item(CustomMenuItem::new("sp-focus", "Focus Window"))
+        .add_native_item(SystemTrayMenuItem::Separator)
+        .add_item(CustomMenuItem::new("sp-edit", "Edit Activity"))
+        .add_item(CustomMenuItem::new("sp-clear", "Clear Activity"))
+        .add_native_item(SystemTrayMenuItem::Separator)
+        .add_item(CustomMenuItem::new("sp-github", "View on GitHub"))
+        .add_item(CustomMenuItem::new("sp-quit", "Quit"))
+    )
 }
 
 #[tauri::command(async)]

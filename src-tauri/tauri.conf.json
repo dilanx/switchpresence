@@ -67,6 +67,10 @@
         "width": 360,
         "theme": "Dark"
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": false
+    }
   }
 }

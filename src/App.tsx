@@ -20,7 +20,6 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
     appWindow.listen('event_clear_presence', () => {
       setLoading(true);
       setGame(null);
@@ -30,7 +29,14 @@ function App() {
         }
         setLoading(false);
       });
+      appWindow.listen('event_edit_presence', () => {
+        appWindow.setFocus();
+        setEditMode(true);
+        setSearchResults(getSearchResults('', games));
+      });
     });
+
+    setLoading(true);
     fetch(
       'https://raw.githubusercontent.com/dilanx/switchpresence/main/games.json'
     )
