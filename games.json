@@ -21403,10 +21403,6 @@
     "image": "https://assets.nintendo.com/image/upload/ncom/en_US/games/switch/o/omega-strike-switch/hero"
   },
   {
-    "title": "OMORI",
-    "image": "https://assets.nintendo.com/image/upload/ncom/en_US/games/switch/o/omori-switch/hero"
-  },
-  {
     "title": "OlliOlli: Switch Stance",
     "image": "https://assets.nintendo.com/image/upload/ncom/en_US/games/switch/o/olliolli-switch-stance-switch/hero"
   },
@@ -25209,5 +25205,13 @@
   {
     "title": "Kirby Fighters™ 2",
     "image": "https://assets.nintendo.com/image/upload/ncom/en_US/games/switch/k/kirby-fighters-2-switch/kirby-fighters-2-switch-hero"
+  },
+  {
+    "title": "OMORI",
+    "image": "https://assets.nintendo.com/image/upload/ncom/en_US/games/switch/o/omori-switch/hero"
+  },
+  {
+    "title": "PICO PARK",
+    "image": "https://assets.nintendo.com/image/upload/ncom/en_US/games/switch/p/pico-park-switch/hero"
   }
 ]
