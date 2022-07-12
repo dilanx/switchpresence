@@ -5,18 +5,21 @@
 
 use discord_rpc_client::Client;
 use discord_rpc_client::models::rich_presence::Activity;
+use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{State, CustomMenuItem, Menu, MenuItem, Submenu, AboutMetadata};
 use std::sync::Mutex;
 
 struct App {
     client: Mutex<Client>,
+    client_win: Mutex<DiscordIpcClient>,
 }
 
 fn main() {
     tauri::Builder::default()
         .manage(App {
             client: Mutex::new(init_discord_client()),
+            client_win: Mutex::new(init_discord_client_win()),
         })
         .invoke_handler(tauri::generate_handler![update_presence, clear_presence])
         .menu(init_window_menu("SwitchPresence".to_string()))
@@ -39,6 +42,12 @@ fn main() {
 fn init_discord_client() -> Client {
     let mut client = Client::new(995819278672601099);
     client.start();
+    return client;
+}
+
+fn init_discord_client_win() -> DiscordIpcClient {
+    let mut client = DiscordIpcClient::new("995819278672601099").unwrap();
+    client.connect().unwrap();
     return client;
 }
 
@@ -78,6 +87,28 @@ fn init_window_menu(title: String) -> Menu {
 
 #[tauri::command(async)]
 fn update_presence(game: String, state: State<App>) -> bool {
+    if cfg!(target_os = "windows") {
+        let mut client_win = state.client_win.lock().unwrap();
+        (*client_win).set_activity(
+            activity::Activity::new()
+                .state(&game)
+                .assets(
+                    activity::Assets::new()
+                        .large_image("switch")
+                        .large_text(&game)
+                        .small_image("green")
+                        .small_text("SwitchPresence")
+                )
+                .timestamps(
+                    activity::Timestamps::new()
+                        .start(SystemTime::now()
+                            .duration_since(UNIX_EPOCH)
+                            .unwrap().as_secs().try_into().unwrap())
+                )
+        ).unwrap();
+        return true;
+    }
+
     let activity = Activity::new()
         .state(&game)
         .assets(|assets| {
@@ -91,7 +122,7 @@ fn update_presence(game: String, state: State<App>) -> bool {
             let time = SystemTime::now();
             let since_the_epoch = time
                 .duration_since(UNIX_EPOCH)
-                .expect("Time went backwards").as_secs();
+                .unwrap().as_secs();
             ts.start(since_the_epoch)
         });
     let mut client = state.client.lock().unwrap();
