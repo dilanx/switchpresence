@@ -195,18 +195,8 @@ fn update_presence(game: String, state: State<App>) -> bool {
 fn clear_presence(state: State<App>) -> bool {
     if cfg!(target_os = "windows") {
         let mut client_win = state.client_win.lock().unwrap();
-        return (*client_win).set_activity(activity::Activity::new()).is_ok();
+        return (*client_win).reconnect().is_ok();
     }
     let mut client = state.client.lock().unwrap();
     return (*client).clear_activity().is_ok();
-}
-
-use std::error::Error;
-
-fn test() -> Result<(), Box<dyn Error>> {
-    let i = 0;
-    if i == 1 {
-        
-    }
-    Ok(())
 }
