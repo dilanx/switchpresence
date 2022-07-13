@@ -29,6 +29,10 @@
 
 Can't find your game? The last search result will always allow you to enter a custom game. Feel free to create an [issue](https://github.com/dilanx/switchpresence/issues) with the name of the missing game and we'll do our best to have it updated within 24 hours!
 
+---
+
+## Download
+
 | OS      | Download                  |
 | ------- | ------------------------- |
 | macOS   | SwitchPresence.app.tar.gz |
