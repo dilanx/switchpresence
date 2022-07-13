@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="src-tauri/icons/icon.png" alt="SwitchPresence" width="128" height="128"
+    <img src="static/icon.png" alt="SwitchPresence" width="128" height="128"
     />
 </p>
 
