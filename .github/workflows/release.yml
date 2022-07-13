@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'src-tauri/**'
 
 jobs:
   release:
